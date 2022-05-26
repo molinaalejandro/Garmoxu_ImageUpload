@@ -74,7 +74,6 @@ namespace Garmoxu_ImageUpload
         private void BtnPlatos_Click(object sender, EventArgs e)
         {
             InsertarImagenesPlatos();
-            MessageBox.Show("¡Operación completada con éxito!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion Platos
 
@@ -82,7 +81,6 @@ namespace Garmoxu_ImageUpload
         private void BtnCategorias_Click(object sender, EventArgs e)
         {
             InsertarImagenesCategorias();
-            MessageBox.Show("¡Operación completada con éxito!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion Categorias
 
@@ -90,7 +88,6 @@ namespace Garmoxu_ImageUpload
         private void BtnUsuarios_Click(object sender, EventArgs e)
         {
             InsertarImagenesUsuarios();
-            MessageBox.Show("¡Operación completada con éxito!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion Usuarios
 
@@ -100,7 +97,6 @@ namespace Garmoxu_ImageUpload
             InsertarImagenesPlatos();
             InsertarImagenesCategorias();
             InsertarImagenesUsuarios();
-            MessageBox.Show("¡Operación completada con éxito!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion Todas las imágenes
 
@@ -136,7 +132,7 @@ namespace Garmoxu_ImageUpload
                     cmd.Parameters.Add("@imagen", MySqlDbType.MediumBlob).Value = imagenBytes[i];
                     cmd.ExecuteNonQuery();
                 }
-
+                MessageBox.Show("¡Tabla '" + tabla + "' actualizada con éxito!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (AggregateException ex)
             {
@@ -161,14 +157,18 @@ namespace Garmoxu_ImageUpload
                 FileInfo[] imagenes = dir.GetFiles();
                 if (imagenes.Length != 0)
                 {
-                    StreamReader reader = new StreamReader(imagenes[0].FullName);
+                    StreamReader streamReader = new StreamReader(imagenes[0].FullName);
                     foreach (FileInfo imagen in imagenes)
                     {
-                        reader = new StreamReader(imagen.FullName);
-                        claves.Add(Path.GetFileNameWithoutExtension(imagen.Name));
-                        imagenBytes.Add(File.ReadAllBytes(imagen.FullName));
+                        if (imagen.Length < 4000000)
+                        {
+                            streamReader = new StreamReader(imagen.FullName);
+                            claves.Add(Path.GetFileNameWithoutExtension(imagen.Name));
+                            imagenBytes.Add(File.ReadAllBytes(imagen.FullName));
+                        }
+                        else MessageBox.Show("¡La imagen '" + imagen.Name + "' es demasiado grande! El límite es 4MB");
                     }
-                    reader.Close();
+                    streamReader.Close();
                 }
             }
         }
