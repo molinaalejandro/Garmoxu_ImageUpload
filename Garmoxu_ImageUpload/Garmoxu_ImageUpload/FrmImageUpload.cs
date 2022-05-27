@@ -160,13 +160,14 @@ namespace Garmoxu_ImageUpload
                     StreamReader streamReader = new StreamReader(imagenes[0].FullName);
                     foreach (FileInfo imagen in imagenes)
                     {
-                        if (imagen.Length < 4000000)
+                        if (RdbRemoto.Checked || imagen.Length < 4000000)
                         {
                             streamReader = new StreamReader(imagen.FullName);
                             claves.Add(Path.GetFileNameWithoutExtension(imagen.Name));
                             imagenBytes.Add(File.ReadAllBytes(imagen.FullName));
                         }
-                        else MessageBox.Show("¡La imagen '" + imagen.Name + "' es demasiado grande! El límite es 4MB");
+                        else if(imagen.Length > 4000000)
+                            MessageBox.Show("¡La imagen '" + imagen.Name + "' es demasiado grande! El límite es 4MB.");
                     }
                     streamReader.Close();
                 }
